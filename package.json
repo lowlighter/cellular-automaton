@@ -1,0 +1,29 @@
+{
+  "name": "lowlight",
+  "description": "",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lowlighter/"
+  },
+  "author": "lowlight(er)",
+  "license": "MIT",
+  "dependencies": {
+    "jsdoc": "^3.4.3",
+    "less": "^2.7.2",
+    "less-plugin-clean-css": "^1.5.1",
+    "babili": "^0.1.4"
+  },
+  "scripts":{
+    "build": "node ./src/build.js"
+  },
+  "config": {
+    "project_name": "Cellular automaton",
+    "source": "./lowlight.automaton.js",
+    "output": "./../bin/lowlight.automaton.js",
+    "jsdoc_source": "../../../bin/lowlight.automaton.js",
+    "jsdoc_output": "../../../docs",
+    "jsdoc_config": "./../../conf.json",
+    "jsdoc_readme": "../../../README.md"
+  }
+}
