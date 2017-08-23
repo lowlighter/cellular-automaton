@@ -136,7 +136,11 @@ class Entity {
      * @type {Object}
      */
         set padding(v) {
+            this._padding = v
             this.sprite.position.set(v.x, v.y)
+        }
+        get padding() {
+            return this._padding
         }
 
     /**
@@ -154,18 +158,18 @@ class Entity {
         set y(v) { this.container.position.y = Math.round(v) }
 
     /**
-     * Width.
+     * Width (Dimensions are always rounded to prevent miscalulations).
      * @type {Number}
      * @readonly
      */
-        get width() { return this.sprite.width  }
+        get width() { return Math.round(this.sprite.width)  }
 
     /**
-     * Height.
+     * Height (Dimensions are always rounded to prevent miscalulations).
      * @type {Number}
      * @readonly
      */
-        get height() { return this.sprite.height }
+        get height() { return Math.round(this.sprite.height) }
 
     /**
      * X anchor (used by Quadtree).

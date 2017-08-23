@@ -19,6 +19,9 @@
         let Quadtree = Lowlight.Quadtree
         let Random = Lowlight.Random
         let Texture = PIXI.Texture
+        let Circle = PIXI.Circle
+        let Polygon = PIXI.Polygon
+        let Ellipse = PIXI.Ellipse
 
         Math.PI_2 = Math.PI * 2
 
@@ -47,6 +50,7 @@
         /* #include <Entity/Flora/Berries/SitrusBerry.js> */
 
         /* #include <Entity/Fauna/Creature.js> */
+        /* #include <Entity/Fauna/Creature.Input.js> */
 
         $(function () {
             //Create PIXI View
