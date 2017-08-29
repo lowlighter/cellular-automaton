@@ -1,8 +1,10 @@
 class Berry extends Food {
     /**
      * <pre>
-     * Create a new Berry .
-     * Should be called only by [Entity.Manager.create]{@link EntityManager#create}
+     * Create a new Berry.
+     * Should be called only by [Entity.Manager.create]{@link EntityManager#create}.
+     * Berry are produced by Berry trees and provide differents effects when eaten.
+     * As food, they expire after a certain amount of iterations, but have a chance to give birth to another tree upon expiring.
      * </pre>
      * @param {Entity.Manager} manager - Entity manager
      * @param {Object} options - Options
@@ -19,6 +21,7 @@ class Berry extends Food {
             //Expiration
                 this.max_cycle = this.manager.life.random(0.75, 1.25) * this.genes.longetivity / 100
         }
+
     /**
      * Compute next state properties.
      * @override

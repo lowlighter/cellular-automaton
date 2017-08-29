@@ -1,64 +1,97 @@
 class Life {
-    constructor(app, seed = 0) {
-        /**
-         * Internal random number generator.
-         * @readonly
-         * @private
-         * @type {Random.Distribution.Uniform}
-         * @category life
-         */
-            this.generator = new Random.Distribution.Uniform().seed(seed)
+    /**
+     * <pre>
+     * Create a new cellular automaton.
+     * This will also create a new world and populate it, and will allow to iterate through time.
+     * Each seed will create a specific universe, and using the same one will always give the same one, as random generators are also seeded.
+     * </pre>
+     * @param {PIXI.Application} app - Application
+     * @param {Number} [seed=0] - Seed
+     * @category life
+     */
+        constructor(app, seed = 0) {
+            /**
+             * Internal random number generator.
+             * @readonly
+             * @private
+             * @type {Random.Distribution.Uniform}
+             * @category life
+             */
+                this.generator = new Random.Distribution.Uniform().seed(seed)
 
-        /**
-         * Internal random number generator for suddent deaths.
-         * @readonly
-         * @private
-         * @type {Random.Distribution.Exponential}
-         */
-            this.death_generator = new Random.Distribution.Exponential(5).seed(seed)
+            /**
+             * Internal random number generator for suddent deaths.
+             * @readonly
+             * @private
+             * @type {Random.Distribution.Exponential}
+             */
+                this.death_generator = new Random.Distribution.Exponential(5).seed(seed)
 
-        /**
-         *  Reference to application.
-         * @type {PIXI.Application}
-         */
-            this.app = app
+            /**
+             *  Reference to application.
+             * @type {PIXI.Application}
+             * @readonly
+             */
+                this.app = app
 
-        /**
-         * Shortcut to access main stage.
-         * @type {PIXI.Container}
-         */
-            this.stage = this.app.stage
+            /**
+             * Shortcut to access main stage.
+             * @type {PIXI.Container}
+             * @readonly
+             */
+                this.stage = this.app.stage
 
-        /**
-         * Associated world.
-         * @type {World}
-         */
-            this.world = new World(this, {cell_size:16, seed})
+            /**
+             * Associated world.
+             * @type {World}
+             * @readonly
+             */
+                this.world = new World(this, {cell_size:16, seed})
 
-        /**
-         * Associated entities.
-         * @type {Entity.Manager}
-         */
-            this.entities = new Entity.Manager(this)
+                this.interactions = this.stage.addChild(new Sprite())
+                
 
-        /**
-         * Current iteration.
-         * @type {Number}
-         */
-            this.iteration = 0
+            /**
+             * Associated entities.
+             * @type {Entity.Manager}
+             * @readonly
+             */
+                this.entities = new Entity.Manager(this)
 
-        //Populate world
-            this.world.populate()
+            /**
+             * Current iteration.
+             * @type {Number}
+             */
+                this.iteration = 0
 
-        //TODO
-            this._iterator = this.iterator()
-            setInterval(q => this.iterate(), 1)
+            /**
+             * Internal iterator generator.
+             * @private
+             * @type {Generator}
+             */
+                this._iterator = this.iterator()
 
-            console.log(this)
-    }
+            //Populate world
+                this.world.populate()
+
+            //TODO
+                setInterval(q => this.iterate(), 1)
+                window.life = this
+
+                this.text = this.stage.addChild(new Text("", {fontSize:16, fontFamily:"Monospace", fill:0xFFFFFF}))
+
+                this.interactions.width = app.view.width
+                this.interactions.height = app.view.height
+                this.interactions.click = (ev) => {
+                    let p = ev.data.getLocalPosition(this.stage)
+                    this.entities.create(Pokeblock, p)
+                }
+                this.interactions.interactive = true
+        }
 
     /**
-     * Compute next state of each entity and update them.
+     * Create a generator which compute next state of each entity and update them.
+     * @return {Generator} Generator which compute next state of each entity and update them.
      */
         *iterator() {
             while (1) {
@@ -66,6 +99,7 @@ class Life {
                 this.entities.list.forEach(e => e.prepare())
                 this.entities.list.forEach(e => e.update())
                 this.entities.quadtree.rebuild()
+                this.text.text = `Iteration : ${this.iteration}`
                 yield this.iteration
             }
         }
@@ -131,6 +165,7 @@ class Life {
      * Initialize cellular automaton (must be called before instanciating any Life structure).
      */
         static init() {
+            PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
             Biome.init()
         }
 }

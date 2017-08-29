@@ -2,7 +2,9 @@ class BerryTree extends Entity {
     /**
      * <pre>
      * Create a new Berry Tree.
-     * Should be called only by [Entity.Manager.create]{@link EntityManager#create}
+     * Should be called only by [Entity.Manager.create]{@link EntityManager#create}.
+     * Berry trees are living entities which provide berries after flowering.
+     * They're much simpler than creatures as they don't have special behaviors.
      * </pre>
      * @param {Entity.Manager} manager - Entity manager
      * @param {Object} options - Options
@@ -125,7 +127,9 @@ class BerryTree extends Entity {
                     this.cycle = 0
                 }
             //Update animation speed
-                this.sprite.animationSpeed = Entity.ANIMATION_SPEED * this.adaptability
+                if (this.alive) {
+                    this.sprite.animationSpeed = Entity.ANIMATION_SPEED * this.adaptability
+                }
             //Sudden death
                 if (this.sudden_death) {
                     this.destroy()
@@ -219,7 +223,7 @@ class BerryTree extends Entity {
 
 /**
  * Default genes.
- * @type {Number}
+ * @type {Object}
  * @readonly
  * @memberof BerryTree
  */

@@ -2,14 +2,15 @@ class OranBerry extends Berry {
     /**
      * <pre>
      * Create a new Oran Berry.
-     * Should be called only by [Entity.Manager.create]{@link EntityManager#create}
+     * Should be called only by [Entity.Manager.create]{@link EntityManager#create}.
+     * Restore 15% of eater's hp.
      * </pre>
      * @param {Entity.Manager} manager - Entity manager
      * @param {Object} options - Options
      * @param {Number} options.x - Initial position of entity
      * @param {Number} options.y - Initial position of entity
      * @param {Number} [options.genes] - Genes
-     * @category flora
+     * @category foods
      */
         constructor(manager, options) {
             //Heritage
@@ -17,5 +18,14 @@ class OranBerry extends Berry {
             //Tree and textures
                 this.texture = Berry.SPRITES.ORAN
                 this.tree = OranTree
+        }
+
+    /**
+     * Called when an entity eat this instance.
+     * @param {Entity} by - Entity eating this instance
+     */
+        eaten(by) {
+            by.hp += 0.15*by.genes.hp_max
+            super.eaten(by)
         }
 }

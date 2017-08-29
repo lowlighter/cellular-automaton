@@ -1,8 +1,9 @@
 class Biome {
     /**
      * <pre>
-     * Instantiate a new biome.
-     * It contains some methods to help biome alteration and edition.
+     * Instantiate a new biome instance.
+     * It contains biome parameters (elevation and climate) and some methods to help biome alteration and edition.
+     * [Biome.type]{@link Biome#type} method allows to find which biome match given parameters.
      * </pre>
      * @param {String} name - Biome name
      * @param {String} frame - Default frame name for texture
@@ -42,6 +43,7 @@ class Biome {
             //Referencing biome
                 Biome.LIST.set(this.name, this)
                 //Biome.MAX_ELEVATION = Math.max(Biome.MAX_ELEVATION, this.elevation)
+                Biome.MAX_ELEVATION = 3
         }
 
     /**
@@ -64,6 +66,13 @@ class Biome {
 
     /**
      * Tell which type of biome have matching parameters.
+     * <div class="alert info">
+     * While <span class="bold">elevation</span> parameter is an integer, <span class="bold">climate</span> parameter is a float value between 0 and 1.
+     * </div>
+     * <div class="alert warning">
+     * As biome's singleton reference is returned, any modification on it will affect <span class="bold">all</span> usage of this biome !
+     * Be careful with it and avoid storing data in biomes instances.
+     * </div>
      * @param {Number} e - Elevation parameter
      * @param {Number} c - Climate parameter
      * @return {Biome} Biome with given parameter
@@ -104,28 +113,54 @@ class Biome {
      * Initialize biome list.
      * Must be called before using biome list.
      * </pre>
-     * <div class="alert info">
+     * <div class="alert warning">
      * Check that textures have been loaded in cache before calling this method.
      * </div>
      */
         static init() {
-            if (Biome.INIT) { return } else { Biome.INIT = true }
-            Biome.LIST = new Map()
-            Biome.MAX_ELEVATION = 3
-            new Biome("ABYSSAL_SEA", "B00_0.png", 0, 1)
-            new Biome("TEMPERED_SEA", "B01_0.png", 1, 2)
-            new Biome("TROPICAL_SEA", "B02_0.png", 1, 3)
-            new Biome("POLAR_BEACH", "B03_0.png", 2, 1)
-            new Biome("TEMPERED_BEACH", "B04_0.png", 2, 2)
-            new Biome("TROPICAL_BEACH", "B05_0.png", 2, 3)
-            new Biome("PLAINS", "B06_0.png", 3, 1)
-            new Biome("FOREST", "B07_0.png", 3, 2)
-            new Biome("JUNGLE", "B08_0.png", 3, 3)
-            new Biome("CAVES", "B09_0.png", 4, 1)
-            new Biome("MOUNTAINS", "B10_0.png", 4, 2)
-            new Biome("ARID_MOUNTAINS", "B11_0.png", 4, 3)
-            new Biome("GLACIAL_PEAK", "B12_0.png", 5, 1)
-            new Biome("ROCKY_PEAK", "B13_0.png", 5, 2)
-            new Biome("VOLCANIC_PEAK", "B14_0.png", 5, 3)
+            //Tell that biomes have already been initialized.
+                if (Biome.INIT) { return } else { Biome.INIT = true }
+            /**
+             * List of biomes.
+             * @type {Map}
+             * @readonly
+             */
+                Biome.LIST = new Map()
+            /**
+             * <pre>
+             * Max elevation.
+             * All biomes higher thatn this value won't be used by [World.generate]{@link World#generate}
+             * </pre>
+             * @type {Number}
+             * @readonly
+             */
+             //(Initialized later)
+                Biome.MAX_ELEVATION = 0
+            /**
+             * <pre>
+             * Sea level (elevation).
+             * All biomes lower than this value are considered as <span class="bold">aquatic</span>.
+             * </pre>
+             * @type {Number}
+             * @readonly
+             */
+                Biome.SEA_LEVEL = 1
+
+            //Create biomes
+                new Biome("ABYSSAL_SEA", "B00_0.png", 0, 1)
+                new Biome("TEMPERED_SEA", "B01_0.png", 1, 2)
+                new Biome("TROPICAL_SEA", "B02_0.png", 1, 3)
+                new Biome("POLAR_BEACH", "B03_0.png", 2, 1)
+                new Biome("TEMPERED_BEACH", "B04_0.png", 2, 2)
+                new Biome("TROPICAL_BEACH", "B05_0.png", 2, 3)
+                new Biome("PLAINS", "B06_0.png", 3, 1)
+                new Biome("FOREST", "B07_0.png", 3, 2)
+                new Biome("JUNGLE", "B08_0.png", 3, 3)
+                new Biome("CAVES", "B09_0.png", 4, 1)
+                new Biome("MOUNTAINS", "B10_0.png", 4, 2)
+                new Biome("ARID_MOUNTAINS", "B11_0.png", 4, 3)
+                new Biome("GLACIAL_PEAK", "B12_0.png", 5, 1)
+                new Biome("ROCKY_PEAK", "B13_0.png", 5, 2)
+                new Biome("VOLCANIC_PEAK", "B14_0.png", 5, 3)
         }
 }

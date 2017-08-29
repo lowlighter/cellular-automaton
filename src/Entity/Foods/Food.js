@@ -2,14 +2,16 @@ class Food extends Entity {
     /**
      * <pre>
      * Create a new food entity..
-     * Should be called only by [Entity.Manager.create]{@link EntityManager#create}
+     * Should be called only by [Entity.Manager.create]{@link EntityManager#create}.
+     * Food can provide different effects for entities when eaten.
+     * It automatically expires after max cycles is reached.
      * </pre>
      * @param {Entity.Manager} manager - Entity manager
      * @param {String} frame - Frame name
      * @param {Object} options - Options
      * @param {Number} options.x - Initial position of entity
      * @param {Number} options.y - Initial position of entity
-     * @category entities
+     * @category foods
      */
         constructor(manager, frame, options) {
             //Heritage
@@ -37,7 +39,7 @@ class Food extends Entity {
      */
         set cycle(v) {
             this._cycle_value = v
-            this._cycle_indic.value(v/this.max_cycle)
+            this._cycle_indic.value(Math.max(v, 0)/this.max_cycle)
         }
         get cycle() {
             return this._cycle_value
@@ -59,6 +61,15 @@ class Food extends Entity {
      */
         update() {
             super.update()
+        }
+
+    /**
+     * Called when an entity eat this instance.
+     * @param {Entity} by - Entity eating this instance
+     * @virtual
+     */
+        eaten(by) {
+            this.destroy()
         }
 }
 

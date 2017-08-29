@@ -1,6 +1,7 @@
 Entity.Indicator = class EntityIndicator {
     /**
      * Create a new value indicator.
+     * This draws a circle based on one of current entity's value, allowing to visualize it quickly.
      * <div class="alert danger">
      * As it uses Graphics, indicators are redrawn at each update, which is lot of computations which can slow down automaton.
      * To prevent this, hide unused indicators.
@@ -35,7 +36,7 @@ Entity.Indicator = class EntityIndicator {
              * Width.
              * @type {Number}
              */
-                this.width = options.width||2
+                this.width = options.width||4
         }
 
     /**

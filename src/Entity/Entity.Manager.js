@@ -1,6 +1,10 @@
 Entity.Manager = class EntityManager {
     /**
+     * <pre>
      * Create a new entity manager.
+     * A manager is associated to a [Life]{@link Life} instance.
+     * It can be used to manage and create new entities.
+     * </pre>
      * @param {Life} life - Life instance
      * @param {Object} [options] - Options
      * @category entities
@@ -33,9 +37,9 @@ Entity.Manager = class EntityManager {
              * </pre>
              * @type {Quadtree}
              */
-                this.quadtree = new Quadtree(0, 0, this.life.world.width, this.life.world.height)
+                this.quadtree = new Quadtree({w:this.life.stage.width, h:this.life.stage.height})
                 this.quadtree.max_items = 1
-                this.quadtree.max_depth = 2
+                this.quadtree.max_depth = 6
         }
 
     /**

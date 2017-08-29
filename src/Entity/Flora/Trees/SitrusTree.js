@@ -2,7 +2,7 @@ class SitrusTree extends BerryTree {
     /**
      * <pre>
      * Create a new Oran Berry Tree.
-     * Should be called only by [Entity.Manager.create]{@link EntityManager#create}
+     * Should be called only by [Entity.Manager.create]{@link EntityManager#create}.
      * </pre>
      * @param {Entity.Manager} manager - Entity manager
      * @param {Object} options - Options

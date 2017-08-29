@@ -1,6 +1,13 @@
 class World {
     /**
+     * <pre>
      * Create a new world.
+     * A world is associated to a [Life]{@link Life} instance and initialized with its seed.
+     * It is used to generate a world with differents biome and obstacles and also populate it once.
+     * This can also be used to access cell's biome infos, find path between two cells or check cells connectivity.
+     * Note that world is static and isn't altered after. Although I would have loved to have seasons and sea level changes,
+     * it wasn't included because I found it complicated (textures update, graph rebuilding, etc.) but maybe in future versions.
+     * </pre>
      * @param {Life} life - Life instance
      * @param {Object} [options] - Options
      * @param {Number} [options.cell_size] - Cell size
@@ -23,7 +30,7 @@ class World {
                 this.container = this.life.stage.addChild(new Container())
 
             /**
-             * Cells size in pixels.
+             * Cells size (in pixels).
              * @readonly
              * @type {Number}
              */
@@ -37,9 +44,15 @@ class World {
                 this.map = new Map()
                 this._map = new Map()
 
+            /**
+             * A&ast; configuration for pathfinding methods..
+             * @private
+             * @type {Astar.Configuration}
+             */
+                this.astar = null
+
             //Generate map
                 this.generate(options.seed)
-                this.postprocessing()
                 this.container.cacheAsBitmap = true
         }
 
@@ -47,7 +60,7 @@ class World {
      * Retrieve Biome stored in map on a given location.
      * @param {Number} x - X
      * @param {Number} y - Y
-     * @param {Boolean} [previous=false] - If set, will return previous stored biome
+     * @param {Boolean} [previous=false] - If set, will return previous stored biome (used for generation)
      * @return {Biome} Biome stored in [x, y] pair key
      */
         get(x, y, previous = false) {
@@ -95,7 +108,10 @@ class World {
         }
 
     /**
-     * Generate a new world map.
+     * <pre>
+     * Generate a new world map with a given seed.
+     * This method should only be called once.
+     * </pre>
      * @param {Number} [seed] - Seed
      */
         generate(seed) {
@@ -104,13 +120,16 @@ class World {
                 noise.seed(seed)
             //Generate
                 for (let i = 0; i < Biome.MAX_ELEVATION; i++) { this._generate_level(i) }
+                this._generate_map_to_astar()
             //Display textures
                 this._generate_add_textures()
+            //Postprocessing
+                this._generate_postprocessing()
         }
 
     /**
      * <pre>
-     * Generate a level of world map.
+     * Generate a level of world map while removing isolated cells.
      * Should be called only by [World.generate]{@link World#generate} or one of its sub-methods.
      * </pre>
      * @private
@@ -164,6 +183,7 @@ class World {
      * @param {Number} lv - Elevation level
      * @param {Number} x - X coordinate
      * @param {Number} y - Y coordinate
+     * @return {Biome} Biome type
      */
         _generate_at(lv, x, y) {
             //Computing climate parameter
@@ -182,6 +202,7 @@ class World {
      * @private
      * @param {Number} x - X coordinate
      * @param {Number} y - Y coordinate
+     * @return {Object} Cell isolation informations (check code for more informations)
      */
         _generate_is_isolated(x, y) {
             let world = this
@@ -233,12 +254,15 @@ class World {
 
     /**
      * <pre>
-     * Tell if cell is isolated and find possible replacement for it.
+     * Tell if cell can be replaced with the given biome.
+     * This prevent having elevation difference greater than 1.
      * Should be called only by [World.generate]{@link World#generate} or one of its sub-methods.
      * </pre>
      * @private
+     * @param {Biome} b - New biome
      * @param {Number} x - X coordinate
      * @param {Number} y - Y coordinate
+     * @return {Boolean} True if can be replaced
      */
         _generate_is_eligible(b, x, y) {
             //Retrieve neighbors
@@ -320,6 +344,50 @@ class World {
         }
 
     /**
+     * <pre>
+     * Convert [World.map]{@link World#map} to an array structure.
+     * Should be called only by [World.generate]{@link World#generate} or one of its sub-methods.
+     * </pre>
+     * @private
+     */
+        _generate_map_to_array() {
+            let map = []
+            for (let x = 0; x < this.x; x++) { map[x] = [] ; for (let y = 0; y < this.y; y++) {
+                map[x][y] = this.get(x, y)
+            } }
+            return map
+        }
+
+    /**
+     * <pre>
+     * Instantiate a new [Astar.Configuration]{@link https://lowlighter.github.io/astar/docs/Configuration.html}.
+     * Graph are based on [Biome.SEA_LEVEL]{@link Biome#SEA_LEVEL}.
+     * Should be called only by [World.generate]{@link World#generate} or one of its sub-methods.
+     * </pre>
+     * @private
+     */
+        _generate_map_to_astar() {
+            let options = {order:"xy", diagonals:true, cutting:true, torus:false, heuristic:"euclidian"}
+            this.astar = new Astar(this._generate_map_to_array(),
+                $.extend({cost(n, m) { return 1 }}, options),
+                $.extend({cost(n, m) { return m.elevation <= Biome.SEA_LEVEL ? 1 : null }}, options),
+                $.extend({cost(n, m) { return m.elevation >  Biome.SEA_LEVEL ? 1 : null }}, options),
+            )
+        }
+
+    /**
+     * <pre>
+     * Perform generated world's postprocessing.
+     * This add obstacles and decorations based on biome.
+     * </pre>
+     * @private
+     */
+        _generate_postprocessing() {
+            //TODO TODO TODO
+            console.warn("World.postprocessing is not implemented yet")
+        }
+
+    /**
      * Place a tile at given coordinates.
      * @private
      * @param {Number} x - X coordinate
@@ -337,34 +405,30 @@ class World {
         }
 
     /**
-     *
-     */
-        postprocessing() {
-            //TODO TODO TODO
-            console.warn("World.postprocessing is not implemented yet")
-        }
-
-    /**
      * World's width.
      * @type {Number}
+     * @readonly
      */
         get width() { return this.life.app.view.width }
 
     /**
      * World's height.
      * @type {Number}
+     * @readonly
      */
         get height() { return this.life.app.view.height }
 
     /**
      * World's max X coordinate.
      * @type {Number}
+     * @readonly
      */
         get x() { return this.width/this.cell_size }
 
     /**
      * World's max Y coordinate.
      * @type {Number}
+     * @readonly
      */
         get y() { return this.height/this.cell_size }
 
@@ -376,185 +440,55 @@ class World {
         outside(position) {
             return (position.x < 0)||(position.y < 0)||(position.x > this.width)||(position.y > this.height)
         }
+
+    /**
+     * Compute a path between two cells.
+     * <div class="alert warn">
+     * Coordinates are cell's one (cx and cy) and not absolute one (x and y).
+     * Therefore, do not pass an entity directly as it won't work.
+     * </div>
+     * @param {Object} from - Start cell
+     * @param {Objetc} to - Goal cell
+     * @param {Number} [layer=World.LAYERS.ALL] - Layer to use
+     * @return {Object[]} Array of cell to attain to reach goal
+     */
+        path(from, to, layer = World.LAYERS.ALL) {
+            let a = {x:~~(from.x/this.cell_size), y:~~(from.y/this.cell_size)}
+            let b = {x:~~(to.x/this.cell_size), y:~~(to.y/this.cell_size)}
+            return this.astar.path(a, b, {layer, jps:true, static:true})
+        }
+
+    /**
+     * Tell if a path exists between two cells without computing path (extremely fast).
+     * <div class="alert warn">
+     * Coordinates are cell's one (cx and cy) and not absolute one (x and y).
+     * Therefore, do not pass an entity directly as it won't work.
+     * </div>
+     * <div class="alert info">
+     * This test is automatically performed before computing a path, there's no need to call it again.
+     * </div>
+     * @param {Object} from - Start cell
+     * @param {Objetc} to - Goal cell
+     * @param {Number} [layer=World.LAYERS.ALL] - Layer to use
+     * @return {Boolean} True if a path exists
+     */
+        connected(from, to, layer = World.LAYERS.ALL) {
+            let graph = this.astar.graphs[layer]
+            let a = {x:~~(from.x/this.cell_size), y:~~(from.y/this.cell_size)}
+            let b = {x:~~(to.x/this.cell_size), y:~~(to.y/this.cell_size)}
+            return graph.connected(graph.node(a, true), graph.node(b, true))
+        }
+
 }
 
-
-
-
-
-
-
-
-
-
-
-
-/*
-//
-World.GENERATION = {
-PADDING:{x:2, y:2}
-}
-    get(x, y) {
-        return this.map.get(`${x}_${y}`)
+/**
+ * Graph layers identifiers.
+ * @readonly
+ * @const
+ * @memberof World
+ */
+    World.LAYERS = {
+        ALL:0,
+        SEA:1,
+        GROUND:2
     }
-
-    set(x, y, value) {
-        this.map.set(`${x}_${y}`, value)
-    }
-
-    isset(x, y) {
-        return this.map.has(`${x}_${y}`)
-    }
-
-    unset(x, y) {
-        this.map.delete(`${x}_${y}`)
-    }
-
-    generate(X, Y, S) {
-        //Rough biome initialization ans smoothing
-            this._generate_rough_biomes(X, Y)
-            this._generate_grow_biomes(X, Y)
-            this._generate_apply_smoothing(S)
-            this._generate_apply_cropping()
-
-
-        //
-            for (let x = 0; x < this.x; x++) { for (let y = 0; y < this.y; y++) {
-                if (!this.isset(x, y)) continue
-                this.tile(x, y, this.get(x, y).frame)
-            } }
-    }
-
-        _generate_rough_biomes(X, Y) {
-            //Rough biome initialization
-                let p = World.GENERATION.PADDING
-                for (let x = -p.x; x <= X+p.x-1; x++) { for (let y = -p.y; y <= Y+p.y-1; y++) {
-                    this.set(x, y, Biome.random())
-                } }
-        }
-
-        _generate_grow_biomes(X, Y) {
-            //Growth biome generation
-                while ((X < this.x)||(Y < this.y)) {
-                    this._generate_apply_growth_biomes(X, Y)
-                    X *= 2 ; Y *= 2
-                }
-        }
-
-        _generate_apply_growth_biomes(X, Y) {
-            //Transfer data i to 2*i
-                let p = World.GENERATION.PADDING
-                for (let x = X+p.x-1; x >= -p.x/2; x--) { for (let y = Y+p.y-1; y >= p.y/2; y--) {
-                    //
-                        if ((2*x >= this.x+p.x)||(2*y >= this.y+p.y)) { break }
-                    //Transfer
-                        this.set(2*x, 2*y, this.get(x, y))
-                    //Unset
-                        if ((x === 0)&&(y === 0)) { continue }
-                        this.unset(x, y)
-                } }
-
-            //Filling missing cells
-                for (let x = -p.x; x <= 2*(X+p.x-1); x++) { for (let y = -p.y; y <= 2*(Y+p.y-1); y++) {
-                    //
-                        if ((x >= this.x+p.x)||(y >= this.y+p.y)) { break }
-                    //Pass if biome is already determined
-                        if (this.isset(x, y)) { continue }
-                    //Biome selection betweeen neighbors
-                        let b = []
-                        if (Math.abs(x) % 2 === 0) { b.push(this.get(x, y-1), this.get(x, y+1)) }
-                        if (Math.abs(y) % 2 === 0) { b.push(this.get(x-1, y), this.get(x+1, y)) }
-                        if ((Math.abs(x) % 2 === 1)&&(Math.abs(y) % 2 === 1)) { b.push(this.get(x-1, y-1), this.get(x+1, y-1), this.get(x-1, y+1), this.get(x+1, y+1)) }
-                        b = b.filter(v => v)
-                        this.set(x, y, b[Life.INSTANCE.random(0, b.length, true)])
-                } }
-        }
-
-        _generate_apply_smoothing(S) {
-            for (let s = 0; s < S; s++) {
-
-            //
-                for (let x = 0; x < this.x; x++) { for (let y = 0; y < this.y; y++) {
-                    //
-                        let b = []
-                        if (this.get(x, y-1).same(this.get(x, y+1))) { b.push(this.get(x, y-1)) }
-                        if (this.get(x-1, y).same(this.get(x+1, y))) { b.push(this.get(x-1, y)) }
-                    //
-                        b = b.filter(v => v)
-                        if (b.length) { this.set(x, y, b[Life.INSTANCE.random(0, b.length, true)]) }
-                } }
-            }
-        }
-
-        _generate_apply_cropping() {
-            let p = World.GENERATION.PADDING
-
-            for (let x = -p.x; x <= this.x+p.x-1; x++) { for (let y = -p.y; y <= this.y+p.y-1; y++) {
-                if ((x < 0)||(y < 0)||(x >= this.x)||(y >= this.y)) { this.unset(x, y) }
-            } }
-
-        }
-*/
-
-/*
-
-    generate(seed = 0) {
-            seed = Math.random()
-            console.info(seed)
-            noise.seed(seed)
-            this.map = [] ; this.tiles = []
-        //Biome generation (first draft)
-            for (let x = -1; x <= this.x; x++) { this.map[x] = []; this.tiles[x] = []; for (let y = -1; y <= this.y; y++) {
-                this.map[x][y] = this._generate_on(x, y)
-                this.tiles[x][y] = []
-            } }
-        //
-            this._generate_remove_isolated()
-            this._generate_add_textures()
-    }
-
-    _generate_on(x, y) {
-        //Elevation
-            x /= this.x ; y /= this.y
-            let ew = [1, 2, 4, 8], ews = ew.reduce((w, v) => w + 1/v, 0)
-
-            let e = ew.reduce((w, v) => w + (1/v)*Math.abs(noise.simplex2(v * x, v * y)), 0) / ews
-
-        //Climate
-            let c = 1*Math.abs(noise.simplex2(1 * y, 1 * x)) + 0.5*Math.abs(noise.simplex2(2 * y, 2 * x))
-        //Biomes
-            return Biome.type(e, c/1.5)
-    }
-
-
-
-    _generate_remove_isolated() {
-        let changed = 0, breaker = 0
-        //
-        do { changed = 0
-            for (let x = 0; x < this.x; x++) { for (let y = 0; y < this.y; y++) {
-                //
-                    let b = this.map[x][y], r = this._generate_is_isolated(x, y)
-
-                //
-                    if ((r.c0.elevation > 0) && r.isolated) {
-                        console.warn(r, x, y)
-                        //Replacement by
-                            if ((r.isolated)&&(r.d812)) { this.map[x][y] = r.c1 }
-                            if ((r.isolated)&&(r.d234)) { this.map[x][y] = r.c3 }
-                            if ((r.isolated)&&(r.d456)) { this.map[x][y] = r.c5 }
-                            if ((r.isolated)&&(r.d678)) { this.map[x][y] = r.c7 }
-                        //
-                            if ((r.isolated)&&(!r.c8X)) { this.map[x][y] = [r.c6, r.c7, r.c1, r.c2].sort((a, b) => b.lower(a))[0] }
-                            if ((r.isolated)&&(!r.c2X)) { this.map[x][y] = [r.c8, r.c1, r.c3, r.c4].sort((a, b) => b.lower(a))[0] }
-                            if ((r.isolated)&&(!r.c4X)) { this.map[x][y] = [r.c2, r.c3, r.c5, r.c6].sort((a, b) => b.lower(a))[0] }
-                            if ((r.isolated)&&(!r.c6X)) { this.map[x][y] = [r.c4, r.c5, r.c7, r.c8].sort((a, b) => b.lower(a))[0] }
-
-                            this.tile(x, y, "BXX_X.png")
-
-                            changed++
-                    }
-            } }
-        } while (changed > 0 && breaker++ < 100)
-    }
-*/

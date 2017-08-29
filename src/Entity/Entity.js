@@ -2,7 +2,9 @@ class Entity {
     /**
      * <pre>
      * Create a new entity.
-     * Should be called only by [Entity.Manager.create]{@link EntityManager#create}
+     * Entity is the basic structure used by automaton.
+     * It automatically creates PIXI elements to be displayed and also references itself in the manager.
+     * Should be called only by [Entity.Manager.create]{@link EntityManager#create}.
      * </pre>
      * @param {Entity.Manager} manager - Entity manager
      * @param {String} frame - Frame name
@@ -42,10 +44,11 @@ class Entity {
                 this.sprite = this.container.addChild(new AnimatedSprite())
                 this.sprite.animationSpeed = Entity.ANIMATION_SPEED
                 this.texture = frame||Entity.SPRITES.MISSING
-                //Interaction TODO
-                    //this.sprite.interactive = true
-                    //this.sprite.mouseover = () => { this.sprite.tint = 0x0000FF ; Entity.SELECTED = this }
-                    //this.sprite.mouseout = () => { this.sprite.tint = 0xFFFFFF }
+                //Interaction
+                    this.sprite.interactive = true
+                    this.sprite.mouseover = (ev) => this._interaction_over(ev)
+                    this.sprite.mouseout = (ev) => this._interaction_out(ev)
+                    this.sprite.click = (ev) => this._interaction_click(ev)
 
             /**
              * Tell if entity is alive.
@@ -128,11 +131,13 @@ class Entity {
             this.sprite.textures = AnimatedTexture(frame)
             this.sprite.play()
             this.sprite.anchor.set(0.5, 1)
-
         }
 
     /**
+     * <pre>
      * Texture padding.
+     * Setting this member will update sprite's texture offset.
+     * </pre>
      * @type {Object}
      */
         set padding(v) {
@@ -144,18 +149,18 @@ class Entity {
         }
 
     /**
-     * X coordinate (Coordinates are always rounded to prevent miscalulations).
+     * X coordinate.
      * @type {Number}
      */
         get x()  { return this.container.position.x }
-        set x(v) { this.container.position.x = Math.round(v) }
+        set x(v) { this.container.position.x = v }
 
     /**
-     * Y coordinate (Coordinates are always rounded to prevent miscalulations).
+     * Y coordinate.
      * @type {Number}
      */
         get y()  { return this.container.position.y }
-        set y(v) { this.container.position.y = Math.round(v) }
+        set y(v) { this.container.position.y = v }
 
     /**
      * Width (Dimensions are always rounded to prevent miscalulations).
@@ -210,12 +215,14 @@ class Entity {
     /**
      * World containing entity.
      * @type {World}
+     * @readonly
      */
         get world() { return this.manager.life.world }
 
     /**
-     * Current age.
+     * Current age (number of iterations since its creation).
      * @type {Number}
+     * @readonly
      */
         get age() {
             return this.manager.life.iteration - this.created
@@ -225,11 +232,14 @@ class Entity {
      * Retrieve nearby entities.
      * @param {Number} [radius] - Filter by radius relative to this instance
      * @param {String|String[]} [filters] - List of type filters
-     * @return {Set} Set of entity
+     * @param {Boolean} [array=false] - If set, return an array instead of a Set
+     * @return {Set|Array} Set of entity
      */
-        nearby(radius, filters) {
+        nearby(radius, filters, array = false) {
             //List
-                let s = [...this.manager.quadtree.retrieve(this)].filter(v => v.alive)
+                //TODO : let s = [...this.manager.quadtree.retrieve(this)].filter(v => v.alive)
+                let tmp = new Set(this.manager.list) ; tmp.delete(this)
+                let s = [...tmp].filter(v => v.alive)
             //Filter by radius
                 if (radius) {
                     s = s.filter(v => Math.pow(v.x - this.x, 2) + Math.pow(v.y - this.y, 2) < Math.pow(radius, 2))
@@ -239,15 +249,44 @@ class Entity {
                     if (!Array.isArray(filters)) { filters = [filters] }
                     s = s.filter(v => filters.indexOf(v.type) >= 0)
                 }
-            return new Set(s)
+            return array ? s : new Set(s)
         }
 
     /**
      * Current biome.
      * @type {Biome}
+     ù @readonly
      */
         get biome() {
             return this.world.get(this.cx, this.cy).name
+        }
+
+    /**
+     * Callback for mouse over event.
+     * @param {Event} [ev] - Interaction event data
+     * @private
+     */
+        _interaction_over(ev) {
+            this.sprite.tint = 0x0000FF
+            Entity.SELECTED = this
+        }
+
+    /**
+     * Callback for mouse out event.
+     * @param {Event} [ev] - Interaction event data
+     * @private
+     */
+        _interaction_out(ev) {
+            this.sprite.tint = 0xFFFFFF
+        }
+
+    /**
+     * Callback for mouse click.
+     * @param {Event} [ev] - Interaction event data
+     * @private
+     */
+        _interaction_click(ev) {
+
         }
 }
 

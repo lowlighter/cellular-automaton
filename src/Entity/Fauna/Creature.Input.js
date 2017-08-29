@@ -2,7 +2,10 @@ Creature.Input = class CreatureInput {
         /**
          * <pre>
          * Create a new Creature Input.
-         * Contains essentially creature's sight and range action.
+         * This must be linked to a [Creature]{@link Creature}.
+         * Contains essentially creature's sight and range action (influenced by genes).
+         * This will allow to prepare input data for [Creature.Output]{@link CreatureOutput}.
+         * Using this structure will allow more flexibility towards Creatures' behaviors, and even the possibility for machine learning.
          * </pre>
          * @param {Creature} creature - Associated creature
          */
@@ -124,11 +127,15 @@ Creature.Input = class CreatureInput {
          * @param {Object} p - Position
          * @param {Number} p.x - X coordinate
          * @param {Number} p.y - Y coordinate
+         * @param {Boolean} [lower=false] - Limit test to lower area only
+         * @param {Number} [layer=this.creature.layer] - Layer to use
          * @return {Boolean} True if position is contained within input sight.
          */
-            contains(p) {
+            contains(p, lower = false, layer = this.creature.layer) {
                 //If point is in lower circle
-                    if (this.lower.contains(p.x, p.y)) { return true }
+                    if (this.lower.contains(p.x, p.y)) { return true } else if (lower) { return false }
+                //
+                    if (!this.creature.manager.life.world.connected(this.creature, p, layer)) { return false }
                 //If angle is equal to pi (or very similar) : must be in right half-circle
                     if (Math.abs(Math.PI - this.angle) < 0.01) { return (this.circle.contains(p.x, p.y))&&(p.x >= this.x) }
                 //If angle is less than pi : must be in intersection between polygon and circle
@@ -164,31 +171,33 @@ Creature.Input = class CreatureInput {
                 return (this.sprite.visible = false, this)
             }
 
-
-            visible() {
-                console.warn("Creature.Input.visible not implemented yet")
+        /**
+         * Retrieve nearby entities and filters only visible entities.
+         * @param {String|String[]} [filters] - List of type filters
+         * @return {Entity[]} Visible entities
+         */
+            visible(filters) {
+                return this.creature.nearby(this.circle.radius, filters, true).filter(v => this.contains(v))
             }
 
-            interactable() {
-                console.warn("Creature.Input.interactable not implemented yet")
+        /**
+         * Retrieve nearby entities and filters only visible entities with possible interactions.
+         * @return {Entity[]} Visible entities with possible interactions
+         */
+            interactible() {
+                return this.visible().filter(v => this.contains(v, true))
             }
 
-
-
-            list() {
-                console.warn("Creature.Input.list not implemented yet")
-                /*
-                    return {
-                        hp:...
-                        hunger...
-                        visible:[{entity:..., distance:...}, ...]
-                        interactable:idem,
-                        last_action:...
-                    }
-
-                    Structure qui permettra à Creature.Output de déterminer quelle(s) action(s) sont prioritaires
-                    et d'agir.
-                */
+        /**
+         * Format data for usage by [Creature.Output]{@link CreatureOutput}
+         * @return {Object} Prepared data
+         */
+            prepared() {
+                return {
+                    visible:this.visible().map(e => this.creature.from(e)),
+                    interactible:this.interactible().map(e => this.creature.from(e)),
+                    //
+                }
             }
     }
 
@@ -204,5 +213,4 @@ Creature.Input = class CreatureInput {
  * @type {Number}
  * @memberof {CreatureInput}
  */
-
     Creature.Input.ALPHA = 0.4

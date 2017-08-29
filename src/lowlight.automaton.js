@@ -12,45 +12,42 @@
         if ((typeof module === "object")&&(typeof module.exports === "object")) { module.exports = global.Lowlight }
 
     //Includes
-        let Container = PIXI.Container
-        let Sprite = PIXI.Sprite
-        let ParticleContainer = PIXI.ParticleContainer
-        let Graphics = PIXI.Graphics
-        let Quadtree = Lowlight.Quadtree
-        let Random = Lowlight.Random
-        let Texture = PIXI.Texture
-        let Circle = PIXI.Circle
-        let Polygon = PIXI.Polygon
-        let Ellipse = PIXI.Ellipse
-
-        Math.PI_2 = Math.PI * 2
-
-        function AnimatedTexture(frame) {
-            let i = 0, textures = []
-            while (`${frame}_${i}.png` in PIXI.utils.TextureCache) { textures.push(PIXI.Texture.fromFrame(`${frame}_${i++}.png`)) }
-            return textures.length ? textures : [PIXI.Texture.EMPTY]
-        }
-
-        function AnimatedSprite(frame) {
-            return new PIXI.extras.AnimatedSprite(AnimatedTexture(frame))
-        }
-
+        /* #include <Life/Configuration.js> */
         /* #include <Life/Life.js> */
+
         /* #include <World/Biome.js> */
         /* #include <World/World.js> */
+
         /* #include <Entity/Entity.js> */
         /* #include <Entity/Entity.Indicator.js> */
         /* #include <Entity/Entity.Manager.js> */
-        /* #include <Entity/Foods/Food.js> */
+
         /* #include <Entity/Flora/BerryTree.js> */
-        /* #include <Entity/Flora/Berry.js> */
         /* #include <Entity/Flora/Trees/OranTree.js> */
         /* #include <Entity/Flora/Trees/SitrusTree.js> */
-        /* #include <Entity/Flora/Berries/OranBerry.js> */
-        /* #include <Entity/Flora/Berries/SitrusBerry.js> */
+
+        /* #include <Entity/Foods/Food.js> */
+
+        /* #include <Entity/Foods/Pokeblocks/Pokeblock.js> */
+
+        /* #include <Entity/Flora/Berry.js> */
+        /* #include <Entity/Foods/Berries/OranBerry.js> */
+        /* #include <Entity/Foods/Berries/SitrusBerry.js> */
 
         /* #include <Entity/Fauna/Creature.js> */
         /* #include <Entity/Fauna/Creature.Input.js> */
+        /* #include <Entity/Fauna/Creature.Output.js> */
+        /* #include <Entity/Fauna/Creature.Egg.js> */
+
+        /* #include <Entity/Fauna/Actions/Creature.attack.js> */
+        /* #include <Entity/Fauna/Actions/Creature.eat.js> */
+        /* #include <Entity/Fauna/Actions/Creature.flee.js> */
+        /* #include <Entity/Fauna/Actions/Creature.follow.js> */
+        /* #include <Entity/Fauna/Actions/Creature.hunt.js> */
+        /* #include <Entity/Fauna/Actions/Creature.move.js> */
+        /* #include <Entity/Fauna/Actions/Creature.protect.js> */
+        /* #include <Entity/Fauna/Actions/Creature.reproduce.js> */
+        /* #include <Entity/Fauna/Actions/Creature.wander.js> */
 
         $(function () {
             //Create PIXI View
@@ -65,8 +62,6 @@
                 })
 
         })
-
-
 
         global.Lowlight.CellularAutomation = {Life, Entity}
 
