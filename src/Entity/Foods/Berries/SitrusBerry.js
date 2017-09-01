@@ -25,7 +25,8 @@ class SitrusBerry extends Berry {
      * @param {Entity} by - Entity eating this instance
      */
         eaten(by) {
-            by.hp += 0.30*by.genes.hp_max
+            by.prepared.hp += 0.30*by.hp_max
+            by.prepared.hunger += 25
             super.eaten(by)
         }
 }

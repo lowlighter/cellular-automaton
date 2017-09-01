@@ -39,6 +39,9 @@
         /* #include <Entity/Fauna/Creature.Output.js> */
         /* #include <Entity/Fauna/Creature.Egg.js> */
 
+        /* #include <Entity/Fauna/Pokemons/Magicarpe.js> */
+        /* #include <Entity/Fauna/Pokemons/Evoli.js> */
+
         /* #include <Entity/Fauna/Actions/Creature.attack.js> */
         /* #include <Entity/Fauna/Actions/Creature.eat.js> */
         /* #include <Entity/Fauna/Actions/Creature.flee.js> */
@@ -47,6 +50,7 @@
         /* #include <Entity/Fauna/Actions/Creature.move.js> */
         /* #include <Entity/Fauna/Actions/Creature.protect.js> */
         /* #include <Entity/Fauna/Actions/Creature.reproduce.js> */
+        /* #include <Entity/Fauna/Actions/Creature.sleep.js> */
         /* #include <Entity/Fauna/Actions/Creature.wander.js> */
 
         $(function () {

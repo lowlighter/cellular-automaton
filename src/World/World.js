@@ -88,6 +88,24 @@ class World {
         }
 
     /**
+     * <pre>
+     * Return biome type located on a givent location.
+     * <div class="alert info">
+     * World must have been generated before using this method.
+     * This is slightly different from [Biome.type]{@link Biome#type} as it uses post-processed cells.
+     * </div>
+     * </pre>
+     * @param {Number} x - X
+     * @param {Number} y - Y
+     * @return {Biome}
+     */
+        at(x, y) {
+            x = ~~(x/this.cell_size)
+            y = ~~(y/this.cell_size)
+            return this.get(x, y)
+        }
+
+    /**
      * Set a Biome in map on a given location.
      * @param {Number} x - X
      * @param {Number} y - Y
@@ -101,10 +119,17 @@ class World {
      * Populate world.
      */
         populate() {
-            console.warn("World.populate is hard-coded")
-            //this.life.entities.create(OranTree, {x:250, y:450})
-            //this.life.entities.create(SitrusTree, {x:250, y:350})
-            window.test = this.life.entities.create(Creature, {x:50, y:50})
+            console.warn("World.populate is not yet implemented for live env")
+            if (Life.ENV === "dev") {
+                this.life.entities.create(OranTree, {x:250, y:450}).grow(4)
+                this.life.entities.create(OranTree, {x:750, y:50}).grow(4)
+                this.life.entities.create(OranTree, {x:600, y:150}).grow(4)
+                this.life.entities.create(SitrusTree, {x:250, y:350}).grow(4)
+                //window.test = this.life.entities.create(Magicarpe, {x:500, y:700})
+                //this.life.entities.create(Magicarpe, {x:550, y:700})
+                window.test = this.life.entities.create(Evoli, {x:250, y:475})
+                //this.life.entities.create(Evoli, {x:250, y:375})
+            }
         }
 
     /**
@@ -116,8 +141,7 @@ class World {
      */
         generate(seed) {
             //Seed
-                seed =  0.7701236501068505
-                noise.seed(seed)
+                noise.seed(Life.ENV === "dev" ? Life.DEV.WORLD_SEED : seed)
             //Generate
                 for (let i = 0; i < Biome.MAX_ELEVATION; i++) { this._generate_level(i) }
                 this._generate_map_to_astar()
@@ -291,8 +315,9 @@ class World {
      * @private
      */
         _generate_add_textures() {
+            console.warn("World._generate_add_textures doesn't add transition for C0 textures yet")
             for (let x = 0; x < this.x; x++) { for (let y = 0; y < this.y; y++) {
-                this._generate_add_texture(x, y)
+                this._generate_add_texture(x, y, "E0")
             } }
         }
 
@@ -304,29 +329,31 @@ class World {
      * @private
      * @param {Number} x - X coordinate
      * @param {Number} y - Y coordinate
+     * @param {String} XX - Texture bank (See [TEXTURES_BANKS]{@link World#TEXTURES_BANKS})
      */
-        _generate_add_texture(x, y) {
+        _generate_add_texture(x, y, XX) {
             //Retrieve neighborhood and compute elevation texture
                 let r = this.gets(x, y), ce = null, cx = null
-                let e = Math.min(r.c0.elevation-1, 2)
+                let F = World.TEXTURES_BANK[XX].F
+                let e = World.TEXTURES_BANK[XX].E(r)
 
             //Diagonals
-                if (r.c1.lower(r.c0)) { ce = {frame:`E0${e}_5.png`} ; cx = r.c1 }
-                if (r.c3.lower(r.c0)) { ce = {frame:`E0${e}_7.png`} ; cx = r.c3 }
-                if (r.c5.lower(r.c0)) { ce = {frame:`E0${e}_1.png`} ; cx = r.c5 }
-                if (r.c7.lower(r.c0)) { ce = {frame:`E0${e}_3.png`} ; cx = r.c7 }
+                if (r.c1[F](r.c0)) { ce = {frame:`${XX}${e}_5.png`} ; cx = r.c1 }
+                if (r.c3[F](r.c0)) { ce = {frame:`${XX}${e}_7.png`} ; cx = r.c3 }
+                if (r.c5[F](r.c0)) { ce = {frame:`${XX}${e}_1.png`} ; cx = r.c5 }
+                if (r.c7[F](r.c0)) { ce = {frame:`${XX}${e}_3.png`} ; cx = r.c7 }
 
             //Laterals
-                if (r.c4.lower(r.c0)) { ce = {frame:`E0${e}_8.png`} ; cx = r.c4 }
-                if (r.c8.lower(r.c0)) { ce = {frame:`E0${e}_4.png`} ; cx = r.c8 }
-                if (r.c6.lower(r.c0)) { ce = {frame:`E0${e}_2.png`} ; cx = r.c6 }
-                if (r.c2.lower(r.c0)) { ce = {frame:`E0${e}_6.png`} ; cx = r.c2 }
+                if (r.c4[F](r.c0)) { ce = {frame:`${XX}${e}_8.png`} ; cx = r.c4 }
+                if (r.c8[F](r.c0)) { ce = {frame:`${XX}${e}_4.png`} ; cx = r.c8 }
+                if (r.c6[F](r.c0)) { ce = {frame:`${XX}${e}_2.png`} ; cx = r.c6 }
+                if (r.c2[F](r.c0)) { ce = {frame:`${XX}${e}_6.png`} ; cx = r.c2 }
 
             //Corners (frame may be changed according to middle cell of corner)
-                if (r.c8.lower(r.c0) && r.c2.lower(r.c0)) { ce = {frame:`E0${e}_1b.png`} ; cx = r.c1.lower(r.c0) ? r.c1 : r.c8 }
-                if (r.c6.lower(r.c0) && r.c8.lower(r.c0)) { ce = {frame:`E0${e}_7b.png`} ; cx = r.c7.lower(r.c0) ? r.c7 : r.c6 }
-                if (r.c2.lower(r.c0) && r.c4.lower(r.c0)) { ce = {frame:`E0${e}_3b.png`} ; cx = r.c3.lower(r.c0) ? r.c3 : r.c2 }
-                if (r.c4.lower(r.c0) && r.c6.lower(r.c0)) { ce = {frame:`E0${e}_5b.png`} ; cx = r.c5.lower(r.c0) ? r.c5 : r.c4 }
+                if (r.c8[F](r.c0) && r.c2[F](r.c0)) { ce = {frame:`${XX}${e}_1b.png`} ; cx = r.c1[F](r.c0) ? r.c1 : r.c8 }
+                if (r.c6[F](r.c0) && r.c8[F](r.c0)) { ce = {frame:`${XX}${e}_7b.png`} ; cx = r.c7[F](r.c0) ? r.c7 : r.c6 }
+                if (r.c2[F](r.c0) && r.c4[F](r.c0)) { ce = {frame:`${XX}${e}_3b.png`} ; cx = r.c3[F](r.c0) ? r.c3 : r.c2 }
+                if (r.c4[F](r.c0) && r.c6[F](r.c0)) { ce = {frame:`${XX}${e}_5b.png`} ; cx = r.c5.lower(r.c0) ? r.c5 : r.c4 }
 
             //Add base texture
                 this.tile(x, y, r.c0.frame)
@@ -367,7 +394,8 @@ class World {
      * @private
      */
         _generate_map_to_astar() {
-            let options = {order:"xy", diagonals:true, cutting:true, torus:false, heuristic:"euclidian"}
+            console.warn("Lowlight.Astar cutting option should be strict")
+            let options = {order:"xy", diagonals:true, cutting:false, torus:false, heuristic:"euclidian"}
             this.astar = new Astar(this._generate_map_to_array(),
                 $.extend({cost(n, m) { return 1 }}, options),
                 $.extend({cost(n, m) { return m.elevation <= Biome.SEA_LEVEL ? 1 : null }}, options),
@@ -383,7 +411,6 @@ class World {
      * @private
      */
         _generate_postprocessing() {
-            //TODO TODO TODO
             console.warn("World.postprocessing is not implemented yet")
         }
 
@@ -399,7 +426,6 @@ class World {
                 let s = this.container.addChild(new Sprite.fromFrame(frame))
                 s.width = s.height = this.cell_size
                 s.position.set(x*s.width, y*s.height)
-                s.alpha = frame === "BXX_X.png" ? 0.8 : 1
             //Return
                 return s
         }
@@ -438,21 +464,18 @@ class World {
      * @return {Boolean} True if outside of map
      */
         outside(position) {
-            return (position.x < 0)||(position.y < 0)||(position.x > this.width)||(position.y > this.height)
+            return (position.x < 0)||(position.y < 0)||(position.x >= this.width)||(position.y >= this.height)
         }
 
     /**
      * Compute a path between two cells.
-     * <div class="alert warn">
-     * Coordinates are cell's one (cx and cy) and not absolute one (x and y).
-     * Therefore, do not pass an entity directly as it won't work.
-     * </div>
      * @param {Object} from - Start cell
      * @param {Objetc} to - Goal cell
      * @param {Number} [layer=World.LAYERS.ALL] - Layer to use
      * @return {Object[]} Array of cell to attain to reach goal
      */
         path(from, to, layer = World.LAYERS.ALL) {
+            if (this.outside(from)||this.outside(to)) { return [] }
             let a = {x:~~(from.x/this.cell_size), y:~~(from.y/this.cell_size)}
             let b = {x:~~(to.x/this.cell_size), y:~~(to.y/this.cell_size)}
             return this.astar.path(a, b, {layer, jps:true, static:true})
@@ -460,10 +483,6 @@ class World {
 
     /**
      * Tell if a path exists between two cells without computing path (extremely fast).
-     * <div class="alert warn">
-     * Coordinates are cell's one (cx and cy) and not absolute one (x and y).
-     * Therefore, do not pass an entity directly as it won't work.
-     * </div>
      * <div class="alert info">
      * This test is automatically performed before computing a path, there's no need to call it again.
      * </div>
@@ -473,6 +492,7 @@ class World {
      * @return {Boolean} True if a path exists
      */
         connected(from, to, layer = World.LAYERS.ALL) {
+            if (this.outside(from)||this.outside(to)) { return false }
             let graph = this.astar.graphs[layer]
             let a = {x:~~(from.x/this.cell_size), y:~~(from.y/this.cell_size)}
             let b = {x:~~(to.x/this.cell_size), y:~~(to.y/this.cell_size)}
@@ -491,4 +511,19 @@ class World {
         ALL:0,
         SEA:1,
         GROUND:2
+    }
+
+/**
+ * <pre>
+ * Textures bank used for textures transitions.
+ * <span class="bold">F</span> should contains the name of the method of [Biome]{@link Biome} to use.
+ * <span class="bold">E</span> should be a function which takes an object given by [World.gets]{@link World#gets} and return a number used for texture.
+ * </pre>
+ * @readonly
+ * @const
+ * @memberof World
+ */
+    World.TEXTURES_BANK = {
+        "E0":{F:"lower", E(r) { return Math.min(r.c0.elevation-1, 2) }},
+        //"C0":{F:"colder", E(r) { return Math.min(r.c0.climate-1, 2) }}
     }

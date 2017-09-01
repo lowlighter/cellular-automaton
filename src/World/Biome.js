@@ -42,8 +42,8 @@ class Biome {
 
             //Referencing biome
                 Biome.LIST.set(this.name, this)
-                //Biome.MAX_ELEVATION = Math.max(Biome.MAX_ELEVATION, this.elevation)
-                Biome.MAX_ELEVATION = 3
+                Biome.MAX_ELEVATION = Math.max(Biome.MAX_ELEVATION, this.elevation)
+                if (Life.ENV === "dev") { Biome.MAX_ELEVATION = Life.DEV.BIOME_MAX_ELEVATION }
         }
 
     /**
@@ -62,6 +62,15 @@ class Biome {
      */
         lower(than) {
             return this.elevation < than.elevation
+        }
+
+    /**
+     * Tell if current biome is colder than the one given as argument.
+     * @param {Biome} than - Other biome to compare
+     * @return {Boolean} True if current biome is colder
+     */
+        colder(than) {
+            return this.climate < than.climate
         }
 
     /**

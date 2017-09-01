@@ -30,9 +30,10 @@ class SitrusTree extends BerryTree {
      * This method must be overriden for adult stages textures.
      * </pre>
      * @override
+     * @param {Number} [stage] - Instantly grow tree to given stage (default is next stage)
      */
-        grow() {
-            super.grow()
+        grow(stage) {
+            super.grow(stage)
             if (this.stage >= BerryTree.ADULT_STAGE) { this.texture = BerryTree.SPRITES.SITRUS[this.stage-BerryTree.ADULT_STAGE] }
         }
 }
@@ -52,6 +53,6 @@ class SitrusTree extends BerryTree {
             JUNGLE:0.3
         },
         harvest:{min:2, max:3},
-        longetivity:17000,
+        longetivity:170000,
         fertility:0.1
     }

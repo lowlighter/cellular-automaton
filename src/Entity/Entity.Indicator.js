@@ -19,6 +19,7 @@ Entity.Indicator = class EntityIndicator {
              * @type {Graphics}
              */
                 this.sprite = parent.addChild(new Graphics())
+                this.sprite.alpha = 0.7
 
             /**
              * Color.
@@ -37,6 +38,24 @@ Entity.Indicator = class EntityIndicator {
              * @type {Number}
              */
                 this.width = options.width||4
+
+            /**
+             * Type (used for referencing).
+             * @type {String}
+             */
+                this.type = options.type
+
+            /**
+             * Entities manager.
+             * @type {Entity.Manager}
+             */
+                this.manager = options.manager
+
+            //Referencing
+                if (this.manager) {
+                    this.manager.indicators.add(this)
+                    if (this.manager._indicators_visible) { this.show() } else { this.hide() }
+                }
         }
 
     /**
@@ -60,17 +79,15 @@ Entity.Indicator = class EntityIndicator {
      * @param {Number} - New value (in percentage)
      */
         value(value) {
-            this.sprite.clear().lineStyle(this.width, this.color).arc(0, 0, this.radius, 0, value*Entity.Indicator.PI2)
+            this.sprite.clear().lineStyle(this.width, this.color).arc(0, 0, this.radius, 0, value*Entity.PI2)
         }
 
     /**
      * Destructor.
      */
         destructor() {
+            if (this.manager) { this.manager.indicators.delete(this) }
             this.sprite.destroy()
             this.sprite = null
         }
 }
-
-//Prevent recalculation of 2*PI
-    Entity.Indicator.PI2 = Math.PI * 2

@@ -81,18 +81,23 @@ class Entity {
                 this.manager.quadtree.delete(this)
             //Removing graphics instances
                 let container = this.container
-                this.container = null
+                //this.container = null
                 this.sprite.interactive = false
-                this.sprite = null
+                //this.sprite = null
             //Transition
-                this.manager.life.timeout(function (quit) {
-                    if ((container.alpha *= 0.9) < 0.01) {
-                        container.parent.removeChild(container)
-                        container.children.map(v => v.destroy())
-                        container.destroy()
-                        quit()
-                    }
-                }, 0)
+                container.parent.removeChild(container)
+                container.children.map(v => v.destroy())
+                container.destroy()
+                /*
+                    this.manager.life.timeout(function (quit) {
+                        if ((container.alpha *= 0.9) < 0.01) {
+                            container.parent.removeChild(container)
+                            container.children.map(v => v.destroy())
+                            container.destroy()
+                            quit()
+                        }
+                    }, 0)
+                */
         }
 
     /**
@@ -153,14 +158,14 @@ class Entity {
      * @type {Number}
      */
         get x()  { return this.container.position.x }
-        set x(v) { this.container.position.x = v }
+        set x(v) { this.container.position.x = Math.max(0, Math.min(v, this.world.width-1)) }
 
     /**
      * Y coordinate.
      * @type {Number}
      */
         get y()  { return this.container.position.y }
-        set y(v) { this.container.position.y = v }
+        set y(v) { this.container.position.y = Math.max(0, Math.min(v, this.world.height-1)) }
 
     /**
      * Width (Dimensions are always rounded to prevent miscalulations).
@@ -267,8 +272,8 @@ class Entity {
      * @private
      */
         _interaction_over(ev) {
-            this.sprite.tint = 0x0000FF
-            Entity.SELECTED = this
+            //Add tint
+                this.sprite.tint = 0x0000FF
         }
 
     /**
@@ -277,7 +282,8 @@ class Entity {
      * @private
      */
         _interaction_out(ev) {
-            this.sprite.tint = 0xFFFFFF
+            //Remove tint
+                this.sprite.tint = 0xFFFFFF
         }
 
     /**
@@ -286,7 +292,7 @@ class Entity {
      * @private
      */
         _interaction_click(ev) {
-
+            console.warn("No interactions has been implemented yet when clicking on entity")
         }
 }
 
@@ -296,7 +302,7 @@ class Entity {
  * @type {Object}
  */
     Entity.SPRITES = {
-        MISSING:"P01"
+        MISSING:"PXX"
     }
 
 //Prevent recalculation of 2*PI

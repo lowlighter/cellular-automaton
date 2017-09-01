@@ -18,7 +18,7 @@ Creature.Egg = class CreatureEgg extends Entity {
 
             //Cycle value and indicator
                 this._cycle_value = 0
-                this._cycle_indic = new Entity.Indicator(this.container)
+                this._cycle_indic = new Entity.Indicator(this.container, {manager:this.manager, type:"cycle"})
 
             //Sprite padding
                 this.padding = {x:0, y:6}

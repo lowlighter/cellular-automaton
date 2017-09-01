@@ -43,6 +43,7 @@ Creature.Input = class CreatureInput {
                  * @readonly
                  */
                     this.sprite = this.creature.container.addChild(new Graphics())
+                    this.sprite.visible = false
                     this.sprite.alpha = Creature.Input.ALPHA
 
                 //Links shapes to Creature data
@@ -76,8 +77,8 @@ Creature.Input = class CreatureInput {
          */
             destructor() {
                 if (this.sprite) {
-                    this.sprite.destroy()
-                    this.sprite = null
+                    //this.sprite.destroy()
+                    //this.sprite = null
                 }
             }
 
@@ -135,7 +136,7 @@ Creature.Input = class CreatureInput {
                 //If point is in lower circle
                     if (this.lower.contains(p.x, p.y)) { return true } else if (lower) { return false }
                 //
-                    if (!this.creature.manager.life.world.connected(this.creature, p, layer)) { return false }
+                    if (!this.creature.world.connected(this.creature, p, layer)) { return false }
                 //If angle is equal to pi (or very similar) : must be in right half-circle
                     if (Math.abs(Math.PI - this.angle) < 0.01) { return (this.circle.contains(p.x, p.y))&&(p.x >= this.x) }
                 //If angle is less than pi : must be in intersection between polygon and circle
@@ -194,9 +195,20 @@ Creature.Input = class CreatureInput {
          */
             prepared() {
                 return {
-                    visible:this.visible().map(e => this.creature.from(e)),
-                    interactible:this.interactible().map(e => this.creature.from(e)),
-                    //
+                    //Entity in sight
+                        visible:this.visible().map(e => this.creature.from(e)),
+                        interactible:this.interactible().map(e => this.creature.from(e)),
+                    //Sort by distance
+                        distance() {
+                            let dist = (a, b) => (a.distance > b.distance)
+                            this.visible.sort(dist)
+                            this.interactible.sort(dist)
+                            return this
+                        },
+                    //Shortcut for length
+                        get length() {
+                            return this.visible.length
+                        }
                 }
             }
     }

@@ -19,7 +19,7 @@ class Berry extends Food {
             //Save genes
                 this.genes = options.genes||BerryTree.DEFAULT_GENES
             //Expiration
-                this.max_cycle = this.manager.life.random(0.75, 1.25) * this.genes.longetivity / 100
+                this.max_cycle = this.manager.life.random(0.75, 1.25) * Berry.MAX_CYCLES
         }
 
     /**
@@ -73,3 +73,10 @@ class Berry extends Food {
         ORAN:"F01",
         SITRUS:"F02"
     }
+
+/**
+ * Berries longetivity.
+ * @type {Number}
+ * @memberof Berry
+ */
+    Berry.MAX_CYCLES = 1000

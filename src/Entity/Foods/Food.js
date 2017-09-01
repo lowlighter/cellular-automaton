@@ -17,7 +17,8 @@ class Food extends Entity {
             //Heritage
                 super(manager, frame, options)
             //Cycles indicators
-                this._cycle_indic = new Entity.Indicator(this.container, {radius:Math.floor(2 + this.sprite.width/4)})
+                this._cycle_indic = new Entity.Indicator(this.container, {radius:Math.floor(2 + this.sprite.width/4), manager:this.manager, type:"cycle"})
+                this._cycle_indic.hide()
                 this.max_cycle = Food.DEFAULT_MAX_CYCLES
         }
 

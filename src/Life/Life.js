@@ -48,8 +48,15 @@ class Life {
              */
                 this.world = new World(this, {cell_size:16, seed})
 
+            /**
+             * Sprite used for map interactions.
+             * @type {PIXI.Sprite}
+             * @readonly
+             */
                 this.interactions = this.stage.addChild(new Sprite())
-                
+                this.interactions.width = this.app.view.width
+                this.interactions.height = this.app.view.height
+                this.interactions.interactive = true
 
             /**
              * Associated entities.
@@ -74,19 +81,23 @@ class Life {
             //Populate world
                 this.world.populate()
 
-            //TODO
+            /**
+             * Iteration counter display.
+             * @type {PIXI.Text}
+             * @private
+             */
+                this._iterator_text = this.stage.addChild(new Text("", {fontSize:16, fontFamily:"Monospace", fill:0xFFFFFF}))
+
+            //TODO - TEST - TODO - TEST - TODO
+                console.warn("")
                 setInterval(q => this.iterate(), 1)
                 window.life = this
 
-                this.text = this.stage.addChild(new Text("", {fontSize:16, fontFamily:"Monospace", fill:0xFFFFFF}))
-
-                this.interactions.width = app.view.width
-                this.interactions.height = app.view.height
                 this.interactions.click = (ev) => {
                     let p = ev.data.getLocalPosition(this.stage)
-                    this.entities.create(Pokeblock, p)
+                    this.entities.create(Berry, p)
                 }
-                this.interactions.interactive = true
+            //TODO - TEST - TODO - TEST - TODO
         }
 
     /**
@@ -99,7 +110,7 @@ class Life {
                 this.entities.list.forEach(e => e.prepare())
                 this.entities.list.forEach(e => e.update())
                 this.entities.quadtree.rebuild()
-                this.text.text = `Iteration : ${this.iteration}`
+                this._iterator_text.text = `Iteration : ${this.iteration}`
                 yield this.iteration
             }
         }
@@ -169,3 +180,20 @@ class Life {
             Biome.init()
         }
 }
+
+/**
+ * Current environment.
+ * @type {?String}
+ * @memberof Life
+ */
+    Life.ENV = "dev"
+
+/**
+ * Developpement parameters.
+ * @type {Object}
+ * @memberof Life
+ */
+    Life.DEV = {
+        WORLD_SEED:0.7701236501068505,
+        BIOME_MAX_ELEVATION:3
+    }

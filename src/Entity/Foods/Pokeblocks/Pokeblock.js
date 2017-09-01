@@ -47,7 +47,7 @@ class Pokeblock extends Food {
      * @param {Entity} by - Entity eating this instance
      */
         eaten(by) {
-            by.hunger += 15
+            by.prepared.hunger += 15
             super.eaten(by)
         }
 

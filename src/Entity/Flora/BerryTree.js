@@ -25,7 +25,7 @@ class BerryTree extends Entity {
 
             //Cycle value and indicator
                 this._cycle_value = 0
-                this._cycle_indic = new Entity.Indicator(this.container)
+                this._cycle_indic = new Entity.Indicator(this.container, {manager:this.manager, type:"cycle"})
 
             //Sprite padding
                 this.padding = {x:0, y:4}
@@ -56,10 +56,12 @@ class BerryTree extends Entity {
      * </pre>
      * @virtual
      * @private
+     * @param {Number} [stage] - Instantly grow tree to given stage (default is next stage)
      */
-        grow() {
+        grow(stage) {
             //Stage incrementation
                 this.stage++
+                if (stage) { this.stage = stage}
             //If over max stage, harvest berry and return to basic adult stage
                 if (this.stage >= BerryTree.STAGES.length) {
                     this.harvest()
@@ -160,7 +162,7 @@ class BerryTree extends Entity {
  * @readonly
  * @memberof BerryTree
  */
-    BerryTree.CYCLES = [100, 200, 200, 200, 300]
+    BerryTree.CYCLES = [1000, 2000, 750, 500, 500]
 
 /**
  * Maturity stage index.
@@ -230,6 +232,6 @@ class BerryTree extends Entity {
     BerryTree.DEFAULT_GENES = {
         adaptability:{},
         harvest:{min:1, max:1},
-        longetivity:7000,
+        longetivity:70000,
         fertility:0
     }

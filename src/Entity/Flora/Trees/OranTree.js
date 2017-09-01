@@ -30,9 +30,10 @@ class OranTree extends BerryTree {
      * This method must be overriden for adult stages textures.
      * </pre>
      * @override
+     * @param {Number} [stage] - Instantly grow tree to given stage (default is next stage)
      */
-        grow() {
-            super.grow()
+        grow(stage) {
+            super.grow(stage)
             if (this.stage >= BerryTree.ADULT_STAGE) { this.texture = BerryTree.SPRITES.ORAN[this.stage-BerryTree.ADULT_STAGE] }
         }
 }
@@ -53,6 +54,6 @@ class OranTree extends BerryTree {
             JUNGLE:0.4
         },
         harvest:{min:3, max:6},
-        longetivity:7000,
+        longetivity:70000,
         fertility:0.2
     }
