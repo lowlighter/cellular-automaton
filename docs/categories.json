@@ -1,0 +1,17 @@
+{
+    "life" : {
+        "displayName" : "Life"
+    },
+    "world" : {
+        "displayName" : "World"
+    },
+    "flora" : {
+        "displayName" : "Flora"
+    },
+    "entities" : {
+        "displayName" : "Entities"
+    },
+    "foods" : {
+        "displayName" : "Foods"
+    }
+}

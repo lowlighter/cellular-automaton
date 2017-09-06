@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Cellular automaton</title>
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/atom-one-dark.css">
+    </head>
+    <body>
+        <header>
+            <h1>Cellular automaton</h1>
+            <nav>
+                <a href="https://github.com/lowlighter/cellular-automaton">GitHub</a>
+                <a href="https://lowlighter.github.io/cellular-automaton/docs">Documentation</a>
+                <a href="https://lowlight.fr/en/blog/cellular-automaton/">lowlight.fr</a>
+            </nav>
+        </header>
+        <main class="container-full">
+            <div class="container">
+                <p>
+                    This is a live demo from this <a href="https://github.com/lowlighter/cellular-automaton">library</a>.
+                </p>
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                    Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                    Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                    Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+                </p>
+                <p>
+                    See it on <a href="https://github.com/lowlighter/cellular-automaton">GitHub</a> for more informations.
+                </p>
+                <p class="local-warning">
+                    It seems you're running this file from a local file system.<br />
+                    Cross origin requests may be supported only for protocol schemes on some browsers.
+                </p>
+            </div>
+            <div class="container app">
+                <div class="app-view">
+                </div>
+                <div class="app-controller">
+                    <table>
+                        <tr>
+                            <td>Input</td>
+                            <td><input type="text" class="xxx" value="0"></td>
+                        </tr>
+                        <tr>
+                            <td>Select</td>
+                            <td>
+                                <select name="xxx">
+                                    <option value="1">1</option>
+                                    <option value="0">0</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </main>
+        <div class="container-full">
+            <pre><code>
+        //Demo code
+            console.log("Hello world")
+            </code></pre>
+        </div>
+
+        <div class="hidden">
+
+        </div>
+
+        <script type="text/javascript" src="./js/jquery.js"></script>
+        <script type="text/javascript" src="./js/noise.js"></script>
+        <script type="text/javascript" src="./js/pixi.js"></script>
+        <script type="text/javascript" src="./js/lowlight.quadtree.min.js"></script>
+        <script type="text/javascript" src="./js/lowlight.random.min.js"></script>
+        <script type="text/javascript" src="./js/lowlight.astar.min.js"></script>
+        <script type="text/javascript" src="./../bin/lowlight.automaton.js"></script>
+        <script type="text/javascript" src="./js/demo.js"></script>
+        <script type="text/javascript" src="./js/highlight.pack.js"></script>
+        <script type="text/javascript"></script>
+        <script>hljs.initHighlightingOnLoad()</script>
+        <script type="text/javascript">if (/file/.test(window.location.protocol)) { $(".local-warning").show() }</script>
+    </body>
+</html>
