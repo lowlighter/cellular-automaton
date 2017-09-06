@@ -179,6 +179,14 @@ class Life {
             PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
             Biome.init()
         }
+
+    /**
+     * Start cellular automaton.
+     * @param {PIXI.Application} app - Application
+     */
+        static start(app) {
+            new Life(app)
+        }
 }
 
 /**

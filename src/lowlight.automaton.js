@@ -53,19 +53,18 @@
         /* #include <Entity/Fauna/Actions/Creature.sleep.js> */
         /* #include <Entity/Fauna/Actions/Creature.wander.js> */
 
-        $(function () {
-            //Create PIXI View
-                let app = new PIXI.Application(800, 800, {transparent:true})
-                $(".app-view").append(app.view)
-                window.app = app
+        //Create PIXI View
+            let app = new PIXI.Application(800, 800, {transparent:true})
+            $(".app-view").append(app.view)
+            app.renderer.backgroundColor = 0xC0C0C0
+            window.app = app
 
-            //Load textures
-                PIXI.loader.add("/src/cellular-automaton/demo/sprites.json").load(function () {
-                    Life.init()
-                    new Life(app)
-                })
-
-        })
+        //Load textures
+            PIXI.loader.add("src/sprites.json").load(function () {
+                Life.init()
+                Life.start(app)
+                $("#cellular-automaton-start-button").click(function () { Life.start(app) ; $(this).remove() }).prop("disabled", false)
+            })
 
         global.Lowlight.CellularAutomation = {Life, Entity}
 

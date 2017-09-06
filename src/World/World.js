@@ -394,8 +394,7 @@ class World {
      * @private
      */
         _generate_map_to_astar() {
-            console.warn("Lowlight.Astar cutting option should be strict")
-            let options = {order:"xy", diagonals:true, cutting:false, torus:false, heuristic:"euclidian"}
+            let options = {order:"xy", diagonals:true, cutting:"strict", torus:false, heuristic:"euclidian"}
             this.astar = new Astar(this._generate_map_to_array(),
                 $.extend({cost(n, m) { return 1 }}, options),
                 $.extend({cost(n, m) { return m.elevation <= Biome.SEA_LEVEL ? 1 : null }}, options),
