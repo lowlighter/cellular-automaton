@@ -15,7 +15,8 @@
     "babili": "^0.1.4"
   },
   "scripts":{
-    "build": "node ./src/build.js"
+    "build": "node ./src/build.js",
+    "test": "node ./docs/.spotlight/src/build.js"
   },
   "config": {
     "project_name": "Cellular automaton",
