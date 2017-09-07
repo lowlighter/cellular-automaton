@@ -11,7 +11,7 @@
     const config = path.join(__dirname, process.env.npm_package_config_jsdoc_config)
     const readme = path.join(__dirname, process.env.npm_package_config_jsdoc_readme)
     let exit = 0
-
+    
 //Title
     console.log("\033[2J")
     console.log("+-------------------------------+")

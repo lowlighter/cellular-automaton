@@ -130,7 +130,7 @@ class Entity {
 
     /**
      * Update entity textures.
-     * @type {String} frame - Frame name
+     * @type {String}
      */
         set texture(frame) {
             this.sprite.textures = AnimatedTexture(frame)
@@ -260,7 +260,7 @@ class Entity {
     /**
      * Current biome.
      * @type {Biome}
-     ù @readonly
+     * @readonly
      */
         get biome() {
             return this.world.get(this.cx, this.cy).name

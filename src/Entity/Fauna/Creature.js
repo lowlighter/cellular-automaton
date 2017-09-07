@@ -13,6 +13,7 @@ class Creature extends Entity {
      * @param {Number} options.x - Initial position of entity
      * @param {Number} options.y - Initial position of entity
      * @param {Number} [options.genes] - Genes
+     * @extends Entity
      * @category fauna
      */
         constructor(manager, options) {

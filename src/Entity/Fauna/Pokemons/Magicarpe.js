@@ -6,6 +6,8 @@ class Magicarpe extends Creature {
      * </pre>
      * @param {Entity.Manager} manager - Entity manager
      * @param {Object} options - Options
+     * @category pokemon
+     * @extends Creature
      */
         constructor(manager, options) {
             //Heritage

@@ -12,6 +12,7 @@ class Food extends Entity {
      * @param {Number} options.x - Initial position of entity
      * @param {Number} options.y - Initial position of entity
      * @category foods
+     * @extends Entity
      */
         constructor(manager, frame, options) {
             //Heritage

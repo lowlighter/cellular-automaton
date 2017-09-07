@@ -11,6 +11,7 @@ class OranBerry extends Berry {
      * @param {Number} options.y - Initial position of entity
      * @param {Number} [options.genes] - Genes
      * @category foods
+     * @extends Berry
      */
         constructor(manager, options) {
             //Heritage

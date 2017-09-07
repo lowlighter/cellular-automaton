@@ -10,6 +10,7 @@ class SitrusTree extends BerryTree {
      * @param {Number} options.y - Initial position of entity
      * @param {Number} [options.genes] - Genes
      * @category flora
+     * @extends BerryTree
      */
         constructor(manager, options) {
             //Heritage

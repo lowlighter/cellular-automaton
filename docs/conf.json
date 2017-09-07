@@ -1,5 +1,5 @@
 {
     "name": "Cellular Automaton",
-    "plugins": ["./node_modules/jsdoc/templates/spotlight/plugins/categories"],
-    "categoryfile" : "../../../../../docs/categories.json"
+    "plugins": ["./plugins/categories.js"],
+    "categoryfile" : "../../../categories.json"
 }

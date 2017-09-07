@@ -11,6 +11,7 @@ Creature.Egg = class CreatureEgg extends Entity {
      * @param {Number} options.y - Initial position of entity
      * @param {Number} [options.genes] - Genes
      * @category fauna
+     * @extends Entity
      */
         constructor(manager, options) {
             //Heritage

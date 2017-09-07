@@ -12,6 +12,7 @@ class BerryTree extends Entity {
      * @param {Number} options.y - Initial position of entity
      * @param {Number} [options.genes] - Genes
      * @category flora
+     * @extends Entity
      */
         constructor(manager, options) {
             //Heritage

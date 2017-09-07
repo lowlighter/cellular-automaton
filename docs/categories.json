@@ -8,6 +8,12 @@
     "flora" : {
         "displayName" : "Flora"
     },
+    "fauna" : {
+        "displayName" : "Fauna"
+    },
+    "pokemon" : {
+        "displayName" : "Pokemon"
+    },
     "entities" : {
         "displayName" : "Entities"
     },

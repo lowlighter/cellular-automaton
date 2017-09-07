@@ -8,6 +8,7 @@ Creature.Input = class CreatureInput {
          * Using this structure will allow more flexibility towards Creatures' behaviors, and even the possibility for machine learning.
          * </pre>
          * @param {Creature} creature - Associated creature
+         * @category fauna
          */
             constructor(creature) {
                 //Reference to creature

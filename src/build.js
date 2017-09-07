@@ -54,9 +54,9 @@
     //} catch (e) { console.log("    \x1b[31m%s\x1b[0m", `Failed to add license. Please add it manually, don't be a jerk !`) ; exit++ }
 
 //Generating documentation
-    //console.log("Generating documentation :")
-    //let c = spawn("node", ["./docs/.spotlight/src/build.js"])
-    //if (!c.status) { console.log("    \x1b[32m%s\x1b[0m", "Success") } else { console.log("    \x1b[31m%s\x1b[0m", `Error : ${c.status} error${c.status > 1 ? "s" : ""} occured`); exit += c.status }
+    console.log("Generating documentation :")
+    let c = spawn("node", ["./docs/.spotlight/src/build.js"])
+    if (!c.status) { console.log("    \x1b[32m%s\x1b[0m", "Success") } else { console.log("    \x1b[31m%s\x1b[0m", `Error : ${c.status} error${c.status > 1 ? "s" : ""} occured`); exit += c.status }
 
 //Generating demo
     //console.log("Generating demo :")
