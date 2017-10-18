@@ -62,7 +62,7 @@
         //Load textures
             PIXI.loader.add("src/sprites.json").load(function () {
                 Life.init()
-                Life.start(app)
+                if (/github/.test(window.location.href)) { Life.start(app) }
                 $("#cellular-automaton-start-button").click(function () { Life.start(app) ; $(this).remove() }).prop("disabled", false)
             })
 

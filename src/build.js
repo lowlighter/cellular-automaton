@@ -6,6 +6,7 @@
     const fs = require("fs")
     const path = require("path")
     const spawn = require("child_process").spawnSync
+    const hash = require("crypto").createHash("sha256")
     const src = path.join(__dirname, process.env.npm_package_config_source)
     const out = path.join(__dirname, process.env.npm_package_config_output)
     let exit = 0
@@ -39,19 +40,18 @@
 //Writing all content in concatened file
     console.log(`Saving project :`)
     try { fs.writeFileSync(out, content), console.log("    \x1b[32m%s\x1b[0m", out) } catch (e) { console.log("    \x1b[31m%s\x1b[0m", `${out} (failed)`) ; exit++ }
-    let out2 = path.join(__dirname, "./../../lowlight2/public/src/cellular-automaton/demo/lowlight.automaton.js")
-    try { fs.writeFileSync(out2, content), console.log("    \x1b[32m%s\x1b[0m", out2) } catch (e) { console.log("    \x1b[31m%s\x1b[0m", `${out2} (failed)`) ; exit++ }
+    try { hash.update(content), console.log("    \x1b[32m%s\x1b[0m", `Sha-256 : ${hash.digest("hex")}`) } catch (e) {  }
 
 //Scripts
-    //console.log("Scripts minification :")
-    //let min = out.replace(/js$/, "min.js")
-    //exit += execute("Babili", "../node_modules/.bin/babili", [out, "-o", min])
-    //try {
-    //    let mcontent = fs.readFileSync(min).toString()
-    //    let license = fs.readFileSync("./LICENSE.md").toString()
-    //    fs.writeFileSync(min, `/**\n${license}\n*/\n`+mcontent)
-    //    console.log("    \x1b[32m%s\x1b[0m", "LICENSE.md has been added")
-    //} catch (e) { console.log("    \x1b[31m%s\x1b[0m", `Failed to add license. Please add it manually, don't be a jerk !`) ; exit++ }
+    console.log("Scripts minification :")
+    let min = out.replace(/js$/, "min.js")
+    exit += execute("Babel-minify", "../node_modules/.bin/babel-minify", [out, "-o", min])
+    try {
+        let mcontent = fs.readFileSync(min).toString()
+        let license = fs.readFileSync("./LICENSE.md").toString()
+        fs.writeFileSync(min, `/**\n${license}\n*/\n`+mcontent)
+        console.log("    \x1b[32m%s\x1b[0m", "LICENSE.md has been added")
+    } catch (e) { console.log("    \x1b[31m%s\x1b[0m", `Failed to add license. Please add it manually, don't be a jerk !`) ; exit++ }
 
 //Generating documentation
     console.log("Generating documentation :")
@@ -59,17 +59,17 @@
     if (!c.status) { console.log("    \x1b[32m%s\x1b[0m", "Success") } else { console.log("    \x1b[31m%s\x1b[0m", `Error : ${c.status} error${c.status > 1 ? "s" : ""} occured`); exit += c.status }
 
 //Generating demo
-    //console.log("Generating demo :")
-    //try {
-    //    let template = process.env.npm_package_config_demo_template, demo_out = process.env.npm_package_config_demo_output
-    //    let demo = fs.readFileSync(template).toString()
-    //        .replace(/\{{2}\s*TITLE\s*\}{2}/g, process.env.npm_package_config_project_name)
-    //        .replace(/\{{2}\s*REPO\s*\}{2}/g, process.env.npm_package_config_project_repo)
-    //        .replace(/\{{2}\s*DOCS\s*\}{2}/g, process.env.npm_package_config_project_docs)
-    //        .replace(/\{{2}\s*PAGE\s*\}{2}/g, process.env.npm_package_config_project_page)
-    //    fs.writeFileSync(demo_out, demo)
-    //    console.log("    \x1b[32m%s\x1b[0m", `${demo_out} was generated from ${template}`)
-    //} catch (e) { console.log("    \x1b[31m%s\x1b[0m", e) ; exit++ }
+    console.log("Generating demo :")
+    try {
+        let template = process.env.npm_package_config_demo_template, demo_out = process.env.npm_package_config_demo_output
+        let demo = fs.readFileSync(template).toString()
+            .replace(/\{{2}\s*TITLE\s*\}{2}/g, process.env.npm_package_config_project_name)
+            .replace(/\{{2}\s*REPO\s*\}{2}/g, process.env.npm_package_config_project_repo)
+            .replace(/\{{2}\s*DOCS\s*\}{2}/g, process.env.npm_package_config_project_docs)
+            .replace(/\{{2}\s*PAGE\s*\}{2}/g, process.env.npm_package_config_project_page)
+        fs.writeFileSync(demo_out, demo)
+        console.log("    \x1b[32m%s\x1b[0m", `${demo_out} was generated from ${template}`)
+    } catch (e) { console.log("    \x1b[31m%s\x1b[0m", e) ; exit++ }
 
 //Command execution
     function execute(name, bin, args) {
@@ -79,9 +79,9 @@
                 let pckg = path.join.apply(null, bin)
                 if (!fs.existsSync(pckg)) { throw new Error(`${name} isn't installed`) }
             //Execute command
-                let c = spawn(pckg, args, {shell:true})
+                let c = spawn(pckg, args, {shell:true, stdio:["inherit", "pipe", "pipe"]})
             //Output
-                if (c.stderr.length) { throw new Error(c.stderr) }
+                if (c.stderr.length) { throw new Error(c.stderr.toString().replace(/\n*$/, "")) }
                 console.log("    \x1b[32m%s\x1b[0m", "Success")
                 return 0
         } catch (e) {

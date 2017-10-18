@@ -1,15 +1,29 @@
 # Cellular automaton
-This library is a template for **Projects**.
+This library contains a complex cellular automaton which simulates a complete ecosystem, including universe, fauna and flora.
+It has no special purpose except the pleasure of watching it.
 
 * [Live demo](https://lowlighter.github.io/cellular-automaton/demo/)
 * [Documentation](https://lowlighter.github.io/cellular-automaton/docs/)
 * [About](https://lowlight.fr/en/blog/cellular-automaton)
 
+![Image of cellular automaton](https://github.com/lowlighter/cellular-automaton/raw/master/demo/imgs/demo.gif)
 
 # Features
-* Make your **dreams** alive !
+* **Deterministic** simulation of life based on PRNG
+* A complete **procedurally generated** universe
+    * 15 differents **biomes**
+    * **Day and night** cycles
+    * **Weather**
+* **Flora** simulation
+    * **Berry trees** growth and harvests
+    * Delicious **berries** with multiple effects
+* **Fauna** simulation
+    * **Predators and preys** system
+    * Huge **genome** statistics
+    * Unique **behavior**, only the smartest creatures will survive !
+    * **Reproduction**
 
-
+*Nota Bene : This is a project under development, features listed above may not be implemented yet.*
 
 ## Getting Started
 First of all, you'll need to include the library :
@@ -27,10 +41,29 @@ Then you may create alias for convenience :
     let Life = Lowlight.CellularAutomation.Life
 ```
 
+### Dependancies
+
+This library requires the following libraries :
+* [lowlighter/astar](https://github.com/lowlighter/astar)
+* [lowlighter/random](https://github.com/lowlighter/random)
+* [lowlighter/quadtree](https://github.com/lowlighter/quadtree)
+* [pixi.js](https://github.com/pixijs/pixi.js/)
+* [noise.js] (based on Stefan Gustavson)
+
+These are already included in `demo/js` folder.
+
 ## Usage
 
-Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+Just include the following html structure :
 
+```html
+    <div class="app">
+        <div class="app-view"></div>
+        <button type="button" id="cellular-automaton-start-button"></button>
+    </div>
+```
+
+Then, as it's a cellular automaton the only thing you can do is watching it evoling :)
 
 ## Project content
 |            |                             |
