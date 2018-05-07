@@ -3,6 +3,7 @@
     <head>
         <meta charset="utf-8">
         <title>{{TITLE}}</title>
+        <link rel="stylesheet" href="css/fonts.css">
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="css/atom-one-dark.css">
     </head>
@@ -17,6 +18,7 @@
         </header>
         <main class="container-full">
             <div class="container">
+                <h3>What is it ?</h3>
                 <p>
                     This is a live demo from this <a href="{{REPO}}">library</a>.
                 </p>
@@ -38,15 +40,20 @@
                 <div class="app-controller">
                     <table>
                         <tr>
-                            <td>Input</td>
-                            <td><input type="text" class="xxx" value="0"></td>
+                            <td>Sight</td>
+                            <td>
+                                <select name="sight">
+                                    <option value="1">Show</option>
+                                    <option value="0">Hide</option>
+                                </select>
+                            </td>
                         </tr>
                         <tr>
-                            <td>Select</td>
+                            <td>Indicators</td>
                             <td>
-                                <select name="xxx">
-                                    <option value="1">1</option>
-                                    <option value="0">0</option>
+                                <select name="indicators">
+                                    <option value="1">Show</option>
+                                    <option value="0">Hide</option>
                                 </select>
                             </td>
                         </tr>
