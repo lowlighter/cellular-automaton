@@ -22,8 +22,8 @@
     "config": {
         "project_name": "Cellular automaton",
         "project_repo": "https://github.com/lowlighter/cellular-automaton",
-        "project_docs": "https://lowlighter.github.io/cellular-automaton/docs",
-        "project_page": "https://lowlight.fr/en/blog/cellular-automaton/",
+        "project_docs": "https://lowlight.fr/cellular-automaton/docs/",
+        "project_page": "https://lowlight.fr/",
         "source": "./lowlight.automaton.js",
         "output": "./../bin/lowlight.automaton.js",
         "jsdoc_source": "../../../bin/lowlight.automaton.js",
