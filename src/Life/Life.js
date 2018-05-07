@@ -95,7 +95,7 @@ class Life {
 
                 this.interactions.click = (ev) => {
                     let p = ev.data.getLocalPosition(this.stage)
-                    this.entities.create(Berry, p)
+                    this.entities.create(Pokeblock, p)
                 }
             //TODO - TEST - TODO - TEST - TODO
         }
@@ -183,9 +183,10 @@ class Life {
     /**
      * Start cellular automaton.
      * @param {PIXI.Application} app - Application
+     * @return {Life}
      */
         static start(app) {
-            new Life(app)
+            return new Life(app)
         }
 }
 

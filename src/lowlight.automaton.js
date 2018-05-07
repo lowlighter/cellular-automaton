@@ -57,13 +57,19 @@
             let app = new PIXI.Application(800, 800, {transparent:true})
             $(".app-view").append(app.view)
             app.renderer.backgroundColor = 0xC0C0C0
-            window.app = app
 
         //Load textures
             PIXI.loader.add("src/sprites.json").load(function () {
                 Life.init()
-                if (/github/.test(window.location.href)) { Life.start(app) }
-                $("#cellular-automaton-start-button").click(function () { Life.start(app) ; $(this).remove() }).prop("disabled", false)
+                window.life = Life.start(app)
+
+                $(".app-controller [name=indicators]").on("change", function () {
+                  parseInt($(this).val()) ? life.entities.show_indicators() : life.entities.hide_indicators()
+                })
+
+                $(".app-controller [name=sight]").on("change", function () {
+                  life.entities.list.forEach(e => e instanceof Creature ? e.inputs[parseInt($(this).val()) ? "show" : "hide"]() : null)
+                })
             })
 
         global.Lowlight.CellularAutomation = {Life, Entity}

@@ -126,7 +126,11 @@ class World {
                 this.life.entities.create(OranTree, {x:600, y:150}).grow(4)
                 this.life.entities.create(SitrusTree, {x:250, y:350}).grow(4)
                 //window.test = this.life.entities.create(Magicarpe, {x:500, y:700})
-                //this.life.entities.create(Magicarpe, {x:550, y:700})
+                this.life.entities.create(Magicarpe, {x:550+Math.random()*50, y:700+Math.random()*50})
+                this.life.entities.create(Magicarpe, {x:550+Math.random()*50, y:700+Math.random()*50})
+                this.life.entities.create(Magicarpe, {x:550+Math.random()*50, y:700+Math.random()*50})
+                this.life.entities.create(Magicarpe, {x:550+Math.random()*50, y:700+Math.random()*50})
+                this.life.entities.create(Magicarpe, {x:550+Math.random()*50, y:700+Math.random()*50})
                 window.test = this.life.entities.create(Evoli, {x:250, y:475})
                 //this.life.entities.create(Evoli, {x:250, y:375})
             }
