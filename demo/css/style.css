@@ -134,6 +134,10 @@
         }
     }
 
+    div.app-view {
+      background-color: whitesmoke;
+    }
+
     div.app-view, div.app-controller {
         width: 400px;
         min-height: 400px;
