@@ -2,9 +2,8 @@
 This library contains a complex cellular automaton which simulates a complete ecosystem, including universe, fauna and flora.
 It has no special purpose except the pleasure of watching it.
 
-* [Live demo](https://lowlighter.github.io/cellular-automaton/demo/)
-* [Documentation](https://lowlighter.github.io/cellular-automaton/docs/)
-* [About](https://lowlight.fr/en/blog/cellular-automaton)
+* [Live demo](https://lowlight.fr/cellular-automaton/demo/)
+* [Documentation](https://lowlight.fr/cellular-automaton/docs/)
 
 ![Image of cellular automaton](https://github.com/lowlighter/cellular-automaton/raw/master/demo/imgs/demo.gif)
 
