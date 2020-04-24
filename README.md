@@ -1,3 +1,5 @@
+# ⚠️ Project archived, checkout [Gracidea](https://github.com/lowlighter/gracidea)
+
 # Cellular automaton
 This library contains a complex cellular automaton which simulates a complete ecosystem, including universe, fauna and flora.
 It has no special purpose except the pleasure of watching it.
